@@ -1,0 +1,3 @@
+tortilla_barcode = "8410076474438"
+chicken_barcode = "5413458066880"
+cheese_barcode = "3560070168651"
