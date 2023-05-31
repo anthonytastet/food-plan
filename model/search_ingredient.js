@@ -1,11 +1,4 @@
-const handle_search_ingredient_form = () => {
-  const form = document.querySelector(".search_ingredient_form");
-  form.addEventListener("submit", (e) => {
-    e.preventDefault(); // prevents the form from auto-submitting
-    const product_barcode = document.querySelector(".text_input").value;
-    search_ingredient(product_barcode);
-  });
-};
+import * as component from "../view/component/form.js";
 
 // get product barcode
 // const get_ingredient_barcode = (barcode) => {
@@ -34,37 +27,44 @@ const contact_api = async (url) => {
 const search_ingredient = async (product_barcode) => {
   const request_url = build_request_url(product_barcode);
   const food_information = await contact_api(request_url);
-  display_ingredient(food_information);
+  component.edit_ingredient_form(food_information);
+  // display_ingredient(food_information);
+};
+
+// handle search ingredient form
+const handle_search_ingredient_form = () => {
+  const form = document.querySelector(".search_ingredient_form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault(); // prevents the form from auto-submitting
+    const product_barcode = document.querySelector(".text_input").value;
+    search_ingredient(product_barcode);
+  });
 };
 
 // display ingredient
 const display_ingredient = (food_data) => {
   const main = document.querySelector(".main");
-  const food_container = document.createElement("div");
-  food_container.setAttribute("class", "food_container");
+
+  const ingredient_container = document.createElement("div");
+  ingredient_container.setAttribute("class", "ingredient_container");
 
   const product_name = document.createElement("div");
   product_name.setAttribute("class", "product_name");
   product_name.innerText = food_data.product_name;
 
-  const brands = document.createElement("div");
-  brands.setAttribute("class", "brands");
-  brands.innerText = food_data.brands;
-
   const thumbnail = document.createElement("img");
   thumbnail.setAttribute("class", "thumbnail");
   thumbnail.setAttribute("src", food_data.image_front_thumb_url);
 
-  const ingredients = document.createElement("div");
-  ingredients.setAttribute("class", "ingredients");
-  ingredients.innerText = food_data.ingredients_text;
+  const nutrition_data_per = document.createElement("div");
+  nutrition_data_per.setAttribute("class", "nutrition_data_per");
+  nutrition_data_per.innerText = `portion: ${food_data.nutrition_data_per}`;
 
   const nutrients = document.createElement("div");
   nutrients.setAttribute("class", "nutrients");
   for (const nutriment in food_data.nutriments) {
     const preview = [
       "carbohydrates",
-      "energy",
       "energy-kcal",
       "fat",
       "proteins",
@@ -92,22 +92,24 @@ const display_ingredient = (food_data) => {
     nutrients.appendChild(nutrient);
   }
 
-  const stores = document.createElement("div");
-  stores.setAttribute("class", "stores");
-  stores.innerText = food_data.stores;
+  const ingredients = document.createElement("div");
+  ingredients.setAttribute("class", "ingredients");
+  ingredients.innerText = food_data.ingredients_text;
 
-  food_container.appendChild(product_name);
-  food_container.appendChild(thumbnail);
-  food_container.appendChild(nutrients);
-  if (main.contains(document.querySelector(".food_container"))) {
+  ingredient_container.appendChild(product_name);
+  ingredient_container.appendChild(thumbnail);
+  ingredient_container.appendChild(nutrition_data_per);
+  ingredient_container.appendChild(nutrients);
+  ingredient_container.appendChild(ingredients);
+
+  if (main.contains(document.querySelector(".ingredient_container"))) {
     main.replaceChild(
-      food_container,
-      document.querySelector(".food_container")
+      ingredient_container,
+      document.querySelector(".ingredient_container")
     );
   } else {
-    main.appendChild(food_container);
+    main.appendChild(ingredient_container);
   }
-  // console.log(main.childNodes);
 };
 
 export { handle_search_ingredient_form };

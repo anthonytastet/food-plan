@@ -1,5 +1,6 @@
 const base_page_title = "food plan";
 
+// replace navbar link behavior by custom router behavior
 document.addEventListener("click", (e) => {
   const { target } = e;
   if (!target.matches("nav a")) {
@@ -10,12 +11,17 @@ document.addEventListener("click", (e) => {
 });
 
 const location_handler = async () => {
-  const location = window.location.pathname;
-  if (location.length == 0) {
-    location = "/";
+  let current_location = window.location.pathname;
+  if (
+    current_location.length < 1 ||
+    window.location.href === "http://127.0.0.1:5500/index.html" ||
+    window.location.href === "http://127.0.0.1:5500/" ||
+    window.location.href === "http://127.0.0.1:5500"
+  ) {
+    current_location = "/";
   }
 
-  const route = routes[location] || routes[404];
+  const route = routes[current_location] || routes[404];
 
   const page_content = await fetch(route.view).then((response) =>
     response.text()
@@ -26,10 +32,18 @@ const location_handler = async () => {
   document.querySelector("h1").innerText = route.title;
 
   const main_content_script = document.createElement("script");
+  main_content_script.setAttribute("class", "main_content_script");
   main_content_script.setAttribute("type", "module");
   main_content_script.innerHTML = page_content;
 
-  document.body.replaceChild(main_content_script, document.body.childNodes[3]);
+  if (document.body.contains(document.querySelector(".main_content_script"))) {
+    document.body.replaceChild(
+      main_content_script,
+      document.querySelector(".main_content_script")
+    );
+  } else {
+    document.body.appendChild(main_content_script);
+  }
 };
 
 const routes = {
