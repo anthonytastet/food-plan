@@ -9,9 +9,10 @@ const main = () => {
   const main_content = document.createElement("div");
   main_content.setAttribute("class", "main_content");
 
-  const h1 = document.createElement("h1");
+  const page_title = document.createElement("h1");
+  page_title.setAttribute("class", "page_title");
 
-  main.appendChild(h1);
+  main.appendChild(page_title);
   main.appendChild(main_content);
   body.appendChild(main);
 };
